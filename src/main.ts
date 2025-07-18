@@ -48,6 +48,7 @@ ipcMain.handle('get-app-path', () => {
 ipcMain.handle('create-agent', async (event, key: string) => {
   const config = {
     apiKey: key,
+    tvlyKey: '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',
   }
   mainAgenter = new Agenter(config);
   console.log('Agent created');

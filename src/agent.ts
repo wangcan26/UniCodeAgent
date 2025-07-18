@@ -1,34 +1,47 @@
 import {ChatDeepSeek} from '@langchain/deepseek';
 import {ChatPromptTemplate} from '@langchain/core/prompts';
+import {createReactAgent} from "@langchain/langgraph/prebuilt";
+import { MemorySaver } from '@langchain/langgraph/web';
+import { TavilySearchResults } from "@langchain/community/tools/tavily_search";
+import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 
 export interface AgentConfig {
     apiKey: string;
+    tvlyKey?: string;
 };
 
+export interface LLMAgent {
+    graph: any;
+}
+
 export class Agenter {
-    private llm: ChatDeepSeek;
+    private _impl: LLMAgent;
 
     constructor(config: AgentConfig) {
-        this.llm = new ChatDeepSeek({
-            model: 'deepseek-chat',
-            apiKey: config.apiKey,
-            temperature: 0,
-        });
+        process.env.TAVILY_API_KEY = config.tvlyKey;
+        const llm = new ChatDeepSeek({
+                model: 'deepseek-chat',
+                apiKey: config.apiKey,
+                temperature: 0,
+            });
+        const agentTools = [new TavilySearchResults({maxResults: 3})];
+        //Initialize memory to persist state between graph runs
+        const agentCheckpointer = new MemorySaver();
+        this._impl = {
+            graph: createReactAgent({
+                llm,
+                tools: agentTools,
+                checkpointSaver: agentCheckpointer,
+            }),
+        }
     }
 
     async run(input: string): Promise<string> {
-        const systemTemplate = "Translate the following from Chinese into {language}";
-        const prompt = ChatPromptTemplate.fromMessages([
-            ['system', systemTemplate],
-            ['user', input],
-        ]);
-        const promptValue = await prompt.format({
-            language: 'English',
+         //Now it's time to use
+        const agentFinalState = await this._impl.graph.invoke(
+            { messages: [new SystemMessage("请用中文回答"), new HumanMessage(input)] },
+            { configurable: { thread_id: "42" } 
         });
-        const response = await this.llm.invoke(promptValue);
-        if (Array.isArray(response.content)) {
-            return '';
-        }
-        return response.content;
+        return agentFinalState.messages[agentFinalState.messages.length - 1].content;
     }
 };

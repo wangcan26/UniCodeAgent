@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   // Get elements
   const passwordInput = document.getElementById('passwordInput') as HTMLInputElement;
-  const toggleFiles = document.getElementById('toggleFiles') as HTMLHeadingElement;
   const questionInput = document.getElementById('questionInput') as HTMLInputElement;
   const answerDiv = document.getElementById('answer') as HTMLDivElement;
   const agentReady = document.getElementById('agentReady') as HTMLDivElement;
