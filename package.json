@@ -1,0 +1,23 @@
+{
+  "name": "EHCodeAgent",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "npm run build && electron ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@langchain/core": "^0.3.63",
+    "@langchain/deepseek": "^0.1.0",
+    "@types/electron": "^1.6.12",
+    "@types/node": "^24.0.14",
+    "electron": "^37.2.2",
+    "langchain": "^0.3.30",
+    "typescript": "^5.8.3"
+  }
+}

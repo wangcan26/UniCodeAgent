@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directory Selector</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        #directoryPath {
+            flex: 1;
+            padding: 8px;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #0078d7;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #106ebe;
+        }
+
+        #fileViewer {
+            margin-top: 20px;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+
+        .file-list-container {
+            width: 30%;
+            float: left;
+            height: 400px;
+            overflow-y: auto;
+            border-right: 1px solid #ddd;
+            padding-right: 10px;
+        }
+
+        .file-content-container {
+            width: 68%;
+            float: right;
+            height: 400px;
+            overflow-y: auto;
+            padding-left: 10px;
+            box-sizing: border-box;
+        }
+        
+        #fileContent {
+            height: calc(100% - 20px);
+            overflow-y: auto;
+            display: block;
+        }
+
+        #fileList {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #fileList li {
+            padding: 8px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+
+        #fileList li:hover {
+            background-color: #f5f5f5;
+        }
+
+        #fileContent {
+            white-space: pre-wrap;
+            font-family: monospace;
+            margin: 0;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div style="margin-top: 30px; clear: both;">
+        <h2>Password Input</h2>
+        <input type="password" id="passwordInput" placeholder="Enter password and press Enter" 
+               style="width: 100%; padding: 12px; font-size: 16px; margin-top: 10px;
+                      border: 1px solid #ddd; border-radius: 4px;">
+        <div id="passwordSuccess" style="color: green; margin-top: 5px; display: none;">
+            ✓ Password validated successfully
+        </div>
+        <div id="agentReady" style="color: blue; margin-top: 5px; display: none;">
+            Agent is Ready
+        </div>
+    </div>
+
+    <div id="questionSection" style="margin-top: 20px; display: none;">
+        <h2>Ask a Question</h2>
+        <input type="text" id="questionInput" placeholder="Enter your question and press Enter" 
+               style="width: 100%; padding: 12px; font-size: 16px; margin-top: 10px;
+                      border: 1px solid #ddd; border-radius: 4px;">
+        <div id="answer" style="margin-top: 10px; padding: 10px; background-color: #f0f0f0; 
+                                border: 1px solid #ccc; border-radius: 4px; display: none;"></div>
+    </div>
+
+    <script src="dist/renderer.js"></script>
+</body>
+</html>
