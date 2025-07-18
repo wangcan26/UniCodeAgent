@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import path from 'path';
 import { Agenter } from './agent';
+import * as ENV from 'dotenv';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -17,7 +18,14 @@ function createWindow() {
     }
   });
 
+  ENV.config();
   mainWindow.loadFile('index.html');
+  
+  // Send test message after window loads
+  mainWindow.webContents.on('did-finish-load', () => {
+    console.log(`OpenAI API Key: ${process.env.OPENAI_API_KEY}`)
+    mainWindow?.webContents.send('initalize-agent', process.env.OPENAI_API_KEY);
+  });
 
   mainWindow.on('closed', () => {
     mainWindow = null;

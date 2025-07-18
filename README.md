@@ -2,17 +2,13 @@
 
 An Agent that can manipulate multiple engines through mcp servers.
 
-## Features
-- Secure password input field
 
 ## Technical Implementation
 
 ### Main Components
 
 1. **Main Process** (`src/main.ts`)
-   - Handles file system operations
    - IPC communication with renderer process
-   - Directory selection dialog
    - Agent query and answer
 
 2. **Preload Script** (`src/preload.ts`)
@@ -21,14 +17,25 @@ An Agent that can manipulate multiple engines through mcp servers.
 
 3. **Renderer Process** (`src/renderer.ts`)
    - UI interaction handling
-   - File list rendering
    - Content display
 
 4. **Type Definitions** (`src/types.d.ts`)
    - Type safety for Electron API
 
+## Configuration
+
+The application uses a `.env` file for configuration:
+
+```
+OPENAI_API_KEY=your_openai_api_key_here
+```
+
+Required:
+- `OPENAI_API_KEY`: Your OpenAI API key (format: sk-[32 hex characters])
+
 ## Usage
-1. Enter password in the secure input field
+1. Configure your `.env` file with a valid OpenAI API key
+2. Start the application
 
 ## Development
 

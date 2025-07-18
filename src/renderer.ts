@@ -1,36 +1,28 @@
 document.addEventListener('DOMContentLoaded', () => {
   // Get elements
-  const passwordInput = document.getElementById('passwordInput') as HTMLInputElement;
   const questionInput = document.getElementById('questionInput') as HTMLInputElement;
+  const messageDiv = document.createElement('div');
+  messageDiv.style.marginTop = '10px';
+  messageDiv.style.color = 'green';
+  document.body.appendChild(messageDiv);
+
+  // Handle messages from main process
+  window.electronAPI.onInitialize(async (message: string) => {
+    const isValid = /^sk-[0-9a-f]{32}$/.test(message);
+    if (isValid) {
+      agentReady.textContent = 'Agent is Ready';
+      agentReady.style.display = 'block';
+      await window.electronAPI.createAgent(message);
+      questionSection.style.display = 'block';
+    } else {
+      agentReady.textContent = 'Agent API Key is not valid';
+      agentReady.style.color = 'red';
+      agentReady.style.display = 'block';
+    }
+  });
   const answerDiv = document.getElementById('answer') as HTMLDivElement;
   const agentReady = document.getElementById('agentReady') as HTMLDivElement;
   const questionSection = document.getElementById('questionSection') as HTMLDivElement;
-
-  passwordInput.addEventListener('keypress', async (e) => {
-    if (e.key === 'Enter') {
-      const password = passwordInput.value;
-      const isValid = /^sk-[0-9a-f]{32}$/.test(password);
-      
-      const passwordSuccess = document.getElementById('passwordSuccess') as HTMLDivElement;
-      if (isValid) {
-        // Valid password
-        passwordInput.disabled = true;
-        passwordInput.style.backgroundColor = '#f0f0f0';
-        passwordSuccess.style.display = 'block';
-        console.log('Valid password entered');
-        await window.electronAPI.createAgent(password);
-        passwordSuccess.style.display = 'none';
-        agentReady.style.display = 'block';
-        questionSection.style.display = 'block';
-      } else {
-        passwordSuccess.style.display = 'none';
-        // Invalid password
-        alert('Invalid password format. Example: sk-406736f3f2374d5dad79fa3a46855ee0');
-        passwordInput.value = '';
-        passwordInput.focus();
-      }
-    }
-  });
 
   questionInput.addEventListener('keypress', async (e) => {
     if (e.key === 'Enter') {
