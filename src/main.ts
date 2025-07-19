@@ -55,8 +55,7 @@ ipcMain.handle('get-app-path', () => {
 
 ipcMain.handle('create-agent', async (event, key: string) => {
   const config = {
-    apiKey: key,
-    tvlyKey: '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',
+    apiKey: key
   }
   mainAgenter = new Agenter(config);
   console.log('Agent created');
@@ -75,4 +74,29 @@ ipcMain.handle('ask-question', async (event, question: string) => {
     }
   }
   return 'Error: Agent not initialized.';
+});
+
+ipcMain.handle('save-graph-state', async () => {
+  if (mainAgenter) {
+    try {
+      const appPath = app.getAppPath();
+      await mainAgenter.saveGraphVisualization(appPath);
+      return { 
+        success: true,
+        message: 'Graph saved as SVG to dist/image/graphState.png'
+      };
+    } catch (error: unknown) {
+      console.error('Error saving graph:', error);
+      return { 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Unknown error',
+        message: 'Failed to save graph visualization'
+      };
+    }
+  }
+  return { 
+    success: false, 
+    error: 'Agent not initialized',
+    message: 'Please initialize the agent first'
+  };
 });

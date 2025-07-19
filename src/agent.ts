@@ -1,9 +1,10 @@
 import {ChatDeepSeek} from '@langchain/deepseek';
 import {ChatPromptTemplate} from '@langchain/core/prompts';
 import {createReactAgent} from "@langchain/langgraph/prebuilt";
-import { MemorySaver } from '@langchain/langgraph/web';
+import {MemorySaver } from '@langchain/langgraph/web';
 import { TavilySearchResults } from "@langchain/community/tools/tavily_search";
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
+import { writeFileSync } from 'fs';
 
 export interface AgentConfig {
     apiKey: string;
@@ -11,14 +12,13 @@ export interface AgentConfig {
 };
 
 export interface LLMAgent {
-    graph: any;
+    instance: ReturnType<typeof createReactAgent>;
 }
 
 export class Agenter {
     private _impl: LLMAgent;
 
     constructor(config: AgentConfig) {
-        process.env.TAVILY_API_KEY = config.tvlyKey;
         const llm = new ChatDeepSeek({
                 model: 'deepseek-chat',
                 apiKey: config.apiKey,
@@ -28,17 +28,38 @@ export class Agenter {
         //Initialize memory to persist state between graph runs
         const agentCheckpointer = new MemorySaver();
         this._impl = {
-            graph: createReactAgent({
+            instance: createReactAgent({
                 llm,
                 tools: agentTools,
                 checkpointSaver: agentCheckpointer,
             }),
         }
+
+    }
+
+    async saveGraphVisualization(appPath: string): Promise<void> {
+        try {
+            const graph = await this._impl.instance.getGraphAsync();
+            const image = await graph.drawMermaidPng();
+            const arrayBuffer = await image.arrayBuffer();
+            
+            const path = require('path');
+            const fs = require('fs');
+            const outputDir = path.join(appPath, 'dist', 'image');
+            if (!fs.existsSync(outputDir)) {
+                fs.mkdirSync(outputDir, { recursive: true });
+            }
+            const outputPath = path.join(outputDir, 'graphState.png');
+            fs.writeFileSync(outputPath, new Uint8Array(arrayBuffer));
+            return Promise.resolve();
+        } catch (error) {
+            return Promise.reject(error);
+        }
     }
 
     async run(input: string): Promise<string> {
          //Now it's time to use
-        const agentFinalState = await this._impl.graph.invoke(
+        const agentFinalState = await this._impl.instance.invoke(
             { messages: [new SystemMessage("请用中文回答"), new HumanMessage(input)] },
             { configurable: { thread_id: "42" } 
         });

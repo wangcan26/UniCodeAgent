@@ -8,5 +8,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.on('initalize-agent', (_event: Electron.IpcRendererEvent, message: string) => {
       callback(message);
     });
-  }
+  },
+  saveGraphState: () => ipcRenderer.invoke('save-graph-state')
 });

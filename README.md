@@ -4,6 +4,7 @@ An Agent that can manipulate multiple engines through mcp servers.
 
 
 ## Technical Implementation
+- UI Implementation (`index.html`)
 
 ### Main Components
 

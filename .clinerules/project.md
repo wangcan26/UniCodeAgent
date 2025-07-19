@@ -40,4 +40,4 @@ Use LangChain for Agent Q&A and RAG.
 # The last thing
 - After each file generation, run the tool <tool_clean_dotfiles> 
 - For each {user_query}, you should think step by step before action.
-- You can get a quick overview of the project's current status through the README.md.
+- You can get a quick overview of the project's current status through the {README.md}.
