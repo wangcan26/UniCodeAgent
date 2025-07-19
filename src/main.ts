@@ -80,23 +80,11 @@ ipcMain.handle('save-graph-state', async () => {
   if (mainAgenter) {
     try {
       const appPath = app.getAppPath();
-      await mainAgenter.saveGraphVisualization(appPath);
-      return { 
-        success: true,
-        message: 'Graph saved as SVG to dist/image/graphState.png'
-      };
+      return  await mainAgenter.saveGraphVisualization(appPath);
     } catch (error: unknown) {
       console.error('Error saving graph:', error);
-      return { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Unknown error',
-        message: 'Failed to save graph visualization'
-      };
+      return null;
     }
   }
-  return { 
-    success: false, 
-    error: 'Agent not initialized',
-    message: 'Please initialize the agent first'
-  };
+  return null;
 });

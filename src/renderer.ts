@@ -28,13 +28,19 @@ document.addEventListener('DOMContentLoaded', () => {
       saveGraphBtn.addEventListener('click', async () => {
         saveGraphBtn.disabled = true;
         saveGraphBtn.textContent = 'Saving...';
+        
+        // Remove previous status and graph
+        const oldStatus = saveGraphBtn.nextElementSibling;
+        if (oldStatus && oldStatus.tagName === 'DIV') {
+          oldStatus.remove();
+        }
+        const oldGraph = document.getElementById('mermaidGraph');
+        if (oldGraph) {
+          oldGraph.remove();
+        }
+
         try {
-          await window.electronAPI.saveGraphState();
-          const status = document.createElement('div');
-          status.textContent = 'Graph saved to dist/image/graphState.png';
-          status.style.color = 'green';
-          status.style.margin = '5px 0';
-          saveGraphBtn.after(status);
+         const result = await window.electronAPI.saveGraphState();
         } catch (error) {
           const status = document.createElement('div');
           status.textContent = 'Failed to save graph';
@@ -43,6 +49,11 @@ document.addEventListener('DOMContentLoaded', () => {
           saveGraphBtn.after(status);
         } finally {
           saveGraphBtn.disabled = false;
+          const status = document.createElement('div');
+          status.textContent = 'Success to save graph';
+          status.style.color = 'blue';
+          status.style.margin = '5px 0';
+          saveGraphBtn.after(status);
           saveGraphBtn.textContent = 'Save Graph State';
         }
       });
