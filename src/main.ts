@@ -1,6 +1,6 @@
 import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import path from 'path';
-import { Agenter } from './agent';
+import { Agenter, AgentType } from './agenter';
 import * as ENV from 'dotenv';
 
 let mainWindow: BrowserWindow | null = null;
@@ -55,7 +55,8 @@ ipcMain.handle('get-app-path', () => {
 
 ipcMain.handle('create-agent', async (event, key: string) => {
   const config = {
-    apiKey: key
+    apiKey: key,
+    type: AgentType.Custom
   }
   mainAgenter = new Agenter(config);
   console.log('Agent created');

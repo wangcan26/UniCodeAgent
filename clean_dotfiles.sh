@@ -6,6 +6,6 @@
 
 echo "Starting cleanup of dotfiles..."
 
-find . -mindepth 1 -type f -name '.*' -not -path './.git/*' -not -path './.trae/*' -not -name '.git' -not -name '.trae' -not -name '.gitignore' -exec rm -f {} +
+find . -mindepth 1 -type f -name '.*' -not -path './.git/*' -not -path './.trae/*' -not -name '.git' -not -name '.trae' -not -name '.gitignore' -not -name '.env' -exec rm -f {} +
 
 echo "Cleanup complete."

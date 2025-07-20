@@ -1,24 +1,25 @@
 import { ChatDeepSeek } from '@langchain/deepseek';
-import { ChatPromptTemplate } from '@langchain/core/prompts';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { MemorySaver } from '@langchain/langgraph/web';
 import { TavilySearchResults } from '@langchain/community/tools/tavily_search';
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
-import { writeFileSync } from 'fs';
-import { GraphVisualizer } from './utils/GraphVisualizer';
+import { GraphVisualizer } from './utils/graph_visualizer';
 import path from 'path';
+import { createCustomAgent } from './agent/custom_state_graph';
+
+export enum AgentType {
+  Builtin_ReAct,
+  Custom
+}
 
 export interface AgentConfig {
   apiKey: string;
   tvlyKey?: string;
-}
-
-export interface LLMAgent {
-  instance: ReturnType<typeof createReactAgent>;
+  type?: AgentType;
 }
 
 export class Agenter {
-  private _impl: LLMAgent;
+  private _impl: ReturnType<typeof createReactAgent> | ReturnType<typeof createCustomAgent> | undefined;
 
   constructor(config: AgentConfig) {
     const llm = new ChatDeepSeek({
@@ -27,21 +28,27 @@ export class Agenter {
       temperature: 0,
     });
     const agentTools = [new TavilySearchResults({ maxResults: 3 })];
-    const agentCheckpointer = new MemorySaver();
-    this._impl = {
-      instance: createReactAgent({
+    if (config.type === undefined || config.type === AgentType.Builtin_ReAct) {
+      const agentCheckpointer = new MemorySaver();
+      this._impl = createReactAgent({
         llm,
         tools: agentTools,
         checkpointSaver: agentCheckpointer,
-      }),
-    };
+      });
+    } else {
+      console.log("Create Custom Agent");
+      this._impl = createCustomAgent(llm, agentTools);
+    }
   }
 
   async saveGraphVisualization(
     appPath: string
   ): Promise<void> {
+    if (!this._impl) {
+      return;
+    }
     try {
-      const graph = await this._impl.instance.getGraphAsync();
+      const graph = await this._impl.getGraphAsync();
       const outputDir = path.join(appPath, 'dist', 'image');
       return await GraphVisualizer.visualizeGraph(
         graph,
@@ -54,7 +61,10 @@ export class Agenter {
   }
 
   async run(input: string): Promise<string> {
-    const agentFinalState = await this._impl.instance.invoke(
+    if (!this._impl) {
+      return "Unknown Agent Executor";
+    }
+    const agentFinalState = await this._impl.invoke(
       { messages: [new SystemMessage('请用中文回答'), new HumanMessage(input)] },
       { configurable: { thread_id: '42' } }
     );
