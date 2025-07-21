@@ -23,7 +23,7 @@ function callWithModel(llm: ChatDeepSeek) {
     }
 }
 
-export function createCustomAgent(llm: ChatDeepSeek, tools: any[]): any {
+function internalCreateCustomAgent(llm: ChatDeepSeek, tools: any[]) {
     //Define a new graph 
     const workflow = new StateGraph(MessagesAnnotation)
         .addNode("agent", callWithModel(llm))
@@ -33,4 +33,8 @@ export function createCustomAgent(llm: ChatDeepSeek, tools: any[]): any {
         .addConditionalEdges("agent", shouldContinue);
     const app = workflow.compile();
     return app;
+}
+
+export function createCustomAgent(llm: ChatDeepSeek, tools: any[]): ReturnType<typeof internalCreateCustomAgent> {
+    return internalCreateCustomAgent(llm, tools);
 }
