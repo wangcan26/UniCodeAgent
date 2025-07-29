@@ -1,3 +1,4 @@
+// Augment the Window interface to include electronAPI
 interface Window {
   electronAPI: {
     getAppPath: () => Promise<string>;
@@ -5,28 +6,7 @@ interface Window {
     askQuestion: (question: string) => Promise<string>;
     onInitialize: (callback: (message: string) => void) => void;
     saveGraphState: () => Promise<string | null>;
+    renderMarkdown: (md: string) => Promise<string>;
   };
-}
-
-interface Agenter {
-  run(input: string): Promise<string>;
-  saveGraphVisualization(appPath: string): Promise<void>;
-}
-
-interface ElectronAPI {
-  getAppPath: () => Promise<string>;
-  askQuestion: (question: string) => Promise<string>;
-  onInitialize: (callback: (message: string) => void) => void;
-  saveGraphState: () => Promise<string | null>;
-}
-
-interface IElectronAPI {
-  saveGraphVisualization(appPath: string): Promise<void>;
-}
-
-declare global {
-  interface Window {
-    electronAPI: ElectronAPI;
-    mermaid: any; // Declare mermaid on the Window object
-  }
+  mermaid: any;
 }

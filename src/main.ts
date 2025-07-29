@@ -2,6 +2,9 @@ import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import path from 'path';
 import { Agenter, AgentType } from './agenter';
 import * as ENV from 'dotenv';
+import { marked } from 'marked';
+import * as DOMPurify from 'dompurify';
+import { JSDOM } from 'jsdom';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -88,4 +91,16 @@ ipcMain.handle('save-graph-state', async () => {
     }
   }
   return null;
+});
+
+ipcMain.handle('render-markdown', (event, md: string) => {
+  const { window } = new JSDOM('');
+  const purify = DOMPurify.default(window);
+  
+  marked.setOptions({
+    gfm: true,
+    breaks: true
+  });
+
+  return purify.sanitize(marked.parse(md) as string);
 });

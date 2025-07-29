@@ -16,10 +16,18 @@
     "@langchain/core": "^0.3.66",
     "@langchain/deepseek": "^0.1.0",
     "@langchain/langgraph": "^0.4.0",
+    "@types/dompurify": "^3.0.5",
+    "@types/marked": "^5.0.2",
     "@types/node": "^24.1.0",
     "dotenv": "^16.6.1",
     "electron": "^37.2.4",
     "langchain": "^0.3.30",
     "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@types/jsdom": "^21.1.7",
+    "dompurify": "^3.2.6",
+    "jsdom": "^26.1.0",
+    "marked": "^16.1.1"
   }
 }

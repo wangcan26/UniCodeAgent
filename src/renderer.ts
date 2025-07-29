@@ -1,6 +1,12 @@
-document.addEventListener('DOMContentLoaded', () => {
-  // Get elements
+/// <reference path="./types.d.ts" />
+
+document.addEventListener('DOMContentLoaded', async () => {
+  // Get elements first to avoid reference errors
+  const answerDiv = document.getElementById('answer') as HTMLDivElement;
+  const agentReady = document.getElementById('agentReady') as HTMLDivElement;
+  const questionSection = document.getElementById('questionSection') as HTMLDivElement;
   const questionInput = document.getElementById('questionInput') as HTMLInputElement;
+
   const messageDiv = document.createElement('div');
   messageDiv.style.marginTop = '10px';
   messageDiv.style.color = 'green';
@@ -66,9 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
       agentReady.style.display = 'block';
     }
   });
-  const answerDiv = document.getElementById('answer') as HTMLDivElement;
-  const agentReady = document.getElementById('agentReady') as HTMLDivElement;
-  const questionSection = document.getElementById('questionSection') as HTMLDivElement;
 
   questionInput.addEventListener('keypress', async (e) => {
     if (e.key === 'Enter') {
@@ -79,7 +82,8 @@ document.addEventListener('DOMContentLoaded', () => {
         answerDiv.textContent = 'Thinking...';
         try {
           const answer = await window.electronAPI.askQuestion(question);
-          answerDiv.textContent = answer;
+          const html = await window.electronAPI.renderMarkdown(answer);
+          answerDiv.innerHTML = html;
         } catch (error) {
           console.error('Error asking question:', error);
           answerDiv.textContent = 'Error: Could not get an answer.';

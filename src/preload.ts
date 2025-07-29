@@ -9,5 +9,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
       callback(message);
     });
   },
-  saveGraphState: () => ipcRenderer.invoke('save-graph-state')
+  saveGraphState: () => ipcRenderer.invoke('save-graph-state'),
+  renderMarkdown: (md: string) => ipcRenderer.invoke('render-markdown', md)
 });

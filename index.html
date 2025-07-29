@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self'; 
+                   script-src 'self' https://cdn.jsdelivr.net; 
+                   style-src 'self' 'unsafe-inline'; 
+                   img-src 'self' data:">
     <title>Directory Selector</title>
     <style>
         body {
@@ -93,14 +98,13 @@
             Agent is Ready
         </div>
     </div>
-
     <div id="questionSection" style="margin-top: 20px; display: none;">
         <h2>Ask a Question</h2>
+        <div id="answer" style="margin-top: 10px; padding: 10px; background-color: #f0f0f0; 
+                                border: 1px solid #ccc; border-radius: 4px; display: none;"></div>
         <input type="text" id="questionInput" placeholder="Enter your question and press Enter" 
                style="width: 100%; padding: 12px; font-size: 16px; margin-top: 10px;
                       border: 1px solid #ddd; border-radius: 4px;">
-        <div id="answer" style="margin-top: 10px; padding: 10px; background-color: #f0f0f0; 
-                                border: 1px solid #ccc; border-radius: 4px; display: none;"></div>
     </div>
 
     <script>
